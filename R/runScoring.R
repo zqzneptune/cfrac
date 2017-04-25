@@ -4,12 +4,17 @@ runScoring <- function(Raw){
     as.data.frame(Raw[, -c(1)])
   rownames(Dat) <- 
     as.character(unlist(Raw[, 1]))
-  protein_rs <- 
-    rowSums(Dat)
-  DatID <- # Remove proteins that have Zero peptide counts
-    names(protein_rs[protein_rs != 0])
-  Dat <-
-    Dat[rownames(Dat) %in% DatID, ]
+  
+  ID_rv <- # Remove proteins appearing less than two fractions with non-zero peptide counts
+    rownames(Dat)[as.vector(apply(Dat, 1, function(x){sum(x==0)}) >= ncol(Dat)-1)]
+  if(length(ID_rv) != 0){
+    print(paste("Removing ", 
+                length(ID_rv), 
+                " proteins with appear in less than two fractions ...",
+                sep = ""))
+    Dat <-
+      Dat[!(rownames(Dat) %in% ID_rv), ]
+  }
   
   Sc_dat <-
     CoelustionScore(Dat)
@@ -22,6 +27,6 @@ runScoring <- function(Raw){
     separate(Out_dat, `PPI`, sep = "~",
              into = c("InteractorA", "InteractorB"),
              remove = F)
-  return(list(`Proteins` = DatID,
+  return(list(`Proteins` = rownames(Dat),
               `ScoredPPI` = Out_dat))
 }

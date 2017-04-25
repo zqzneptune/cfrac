@@ -1,4 +1,5 @@
 runScoring <- function(Raw){
+  #### Remove Sum cnt equals == 0 ###
   Dat <- 
     as.data.frame(Raw[, -c(1)])
   rownames(Dat) <- 
@@ -9,6 +10,7 @@ runScoring <- function(Raw){
     names(protein_rs[protein_rs != 0])
   Dat <-
     Dat[rownames(Dat) %in% DatID, ]
+  
   Sc_dat <-
     CoelustionScore(Dat)
   s <- t(apply(Sc_dat[, c("InteractorA", "InteractorB")], 1, sort))

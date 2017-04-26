@@ -28,5 +28,6 @@ runScoring <- function(Raw){
              into = c("InteractorA", "InteractorB"),
              remove = F)
   return(list(`Proteins` = rownames(Dat),
+              `RvPrt` = ID_rv,
               `ScoredPPI` = Out_dat))
 }
